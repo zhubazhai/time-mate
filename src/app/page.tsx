@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import dayjs from "dayjs";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // 生成指定月份的考勤数据
 const generateMockAttendanceData = (month: number) => {
   const data = [];
@@ -50,6 +52,7 @@ export default function Home() {
   const [position, setPosition] = useState("前端开发");
   const [name, setName] = useState("孟令峰");
   const [email, setEmail] = useState("3573294503@qq.com");
+  const [isLoading, setIsLoading] = useState(false);
 
   // 加载指定月份的数据
   useEffect(() => {
@@ -104,8 +107,10 @@ export default function Home() {
 
   // 发送邮件处理函数
   const doSendEmail = async () => {
+    setIsLoading(true);
     if (!position || !name || !email) {
       toast.error("请填写完整信息");
+      setIsLoading(false);
       return;
     }
     const ecxelData = await generateExcel({
@@ -116,7 +121,7 @@ export default function Home() {
       email,
     });
 
-    await sendEmail(ecxelData);
+    await sendEmail(ecxelData).finally(() => setIsLoading(false));
   };
 
   // 导出处理函数
@@ -186,9 +191,23 @@ export default function Home() {
             </button>
             <button
               onClick={doSendEmail}
+              disabled={isLoading}
               className="flex items-center px-4 py-2 text-white transition-colors bg-blue-500 rounded-lg hover:bg-blue-600"
             >
-              <i className="mr-2 fa-solid fa-paper-plane"></i> 发送邮件
+              {isLoading ? (
+                <>
+                  <FontAwesomeIcon
+                    icon={faCircleNotch}
+                    spin
+                    className="mr-2 text-white"
+                  />
+                  发送中...
+                </>
+              ) : (
+                <>
+                  <i className="mr-2 fa-solid fa-paper-plane"></i> 发送邮件
+                </>
+              )}
             </button>
           </div>
         </div>
