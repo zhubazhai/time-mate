@@ -35,7 +35,7 @@ export async function POST(req: Request) {
 
     // 创建邮件选项
     const mailOptions = {
-      from: process.env.QQ_EMAIL,
+      from: `${process.env.QQ_EMAIL} ${name}`,
       to,
       subject,
       text,

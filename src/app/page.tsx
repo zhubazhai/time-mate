@@ -286,7 +286,8 @@ async function generateExcel({
       !isAbsent ? `${position}与技术支持` : "",
       isFull ? `Y` : "",
       isFull ? "1" : "",
-      isHalf ? "0.5" : "",
+      isHalf ? "1" : "",
+      isFull ? `Y` : "",
       isHalf ? "请假半天" : "",
     ];
   });
