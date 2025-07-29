@@ -258,8 +258,6 @@ async function generateExcel({
     return;
   }
 
-  // const tplArrayBuffer = await readFileToArrayBuffer(file);
-
   await workbook.xlsx.load(tplArrayBuffer);
   const worksheet = workbook.worksheets[0]; // 取第一个工作表
 
@@ -275,7 +273,6 @@ async function generateExcel({
     .format("YYYY/M/D");
 
   // 修改整行内容
-  console.log("index", attendanceData);
   const monthArray = attendanceData.map((item) => {
     const { status, date } = item;
     const isAbsent = status === "absent";
@@ -291,18 +288,21 @@ async function generateExcel({
       isHalf ? "请假半天" : "",
     ];
   });
-
-  console.log(
-    monthArray.filter((array) => array[1]),
-    "monthArray"
+  worksheet.getCell("D40").value = monthArray.reduce(
+    (acc, cur) => acc + Number(cur[3]),
+    0
   );
+  worksheet.getCell("E40").value = monthArray.reduce(
+    (acc, cur) => acc + Number(cur[4]),
+    0
+  );
+  console.log(monthArray, "monthArray");
   //
   worksheet.eachRow((row, rowNum) => {
     if (rowNum >= 9 && rowNum <= 39) {
       row.eachCell((cell, colNumber) => {
         cell.value = monthArray[rowNum - 9][colNumber - 1];
         if (colNumber === 1) {
-          console.log(cell.value, "cell.value");
         }
       });
     }
