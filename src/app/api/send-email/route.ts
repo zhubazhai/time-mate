@@ -29,14 +29,14 @@ export async function POST(req: Request) {
       to,
       subject,
       text,
-      attachments: file
-        ? [
-            {
-              filename: name,
-              content: ,
-            },
-          ]
-        : [],
+      // attachments: file
+      //   ? [
+      //       {
+      //         filename: name,
+      //         content: ,
+      //       },
+      //     ]
+      //   : [],
     };
 
     // 发送邮件
