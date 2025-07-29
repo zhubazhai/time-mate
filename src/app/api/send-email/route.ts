@@ -5,13 +5,23 @@ export async function POST(req: Request) {
   try {
     // 解析请求中的 JSON 数据和文件
     const formData = await req.formData();
+
     const to = formData.get("to") as string;
     const subject = formData.get("subject") as string;
     const text = formData.get("text") as string;
     const file = formData.get("file");
     const name = formData.get("name") as string;
-    console.log(file, "file", typeof file);
 
+    // 如果有文件，读取文件内容并转换为 Buffer
+    let attachments: nodemailer.AttachmentLike[] = [];
+    if (file instanceof File) {
+      const buffer = await file.arrayBuffer(); // 将 File 转换为 ArrayBuffer
+      const content = Buffer.from(buffer); // 将 ArrayBuffer 转换为 Buffer
+      attachments.push({
+        filename: name,
+        content,
+      });
+    }
     // 配置 QQ 邮箱的 SMTP 服务
     const transporter = nodemailer.createTransport({
       host: "smtp.qq.com",
@@ -29,14 +39,7 @@ export async function POST(req: Request) {
       to,
       subject,
       text,
-      // attachments: file
-      //   ? [
-      //       {
-      //         filename: name,
-      //         content: ,
-      //       },
-      //     ]
-      //   : [],
+      attachments,
     };
 
     // 发送邮件
